@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク管理アプリケーション</title>
+    <link th:href="@{/home.css}" rel="stylesheet">
+    <script th:src="@{/validate.js}"></script>
+</head>
+<body>
+
+<h1 class="application_title">タスク管理アプリケーション</h1>
+
+    <div class="button_position">
+         <form th:action="@{/logout}">
+              <input type="submit" value="ログアウト"/>
+         </form>
+        <div class ="account_name">こんにちは<span th:text="${currentUser}">thymeleaf</span>さん!</div>
+        <form action="/setting">
+            <button class="setting_button" type="submit">設定画面へ</button>
+            <!input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+            <!input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+            <!input type="hidden" name="taskManager" th:value="${taskManager}"/>
+        </form>
+    </div>
+
+<h2>タスクの登録</h2>
+
+<div class="task_form">
+    <form action="/add" method="post">
+        <!-- 変数taskStatusを登録ボタンを押した時にコントローラーに送信 -->
+        <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+        <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+        <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+        <div>
+            <label>タイトル</label>
+            <input id="task" name="task" type="text" style="width:354px;" placeholder="タスクを入力してください"/>
+            <p id="err_msg_task_blank">※タスクのタイトルは入力必須です。</p>
+            <p id="err_msg_task_character_limit">※タイトルの上限文字数を超えています。</p>
+            <p class="title_max">上限30文字</p>
+        </div>
+        <div>
+            <label>カテゴリー</label>
+            <select id="category" name="category">
+                <option value="未選択">未選択</option>
+                <option th:each="category : ${categoryList}" th:value="${category.category}"
+                        th:text="${category.category}" th:selected="${category.category==taskCategory}"></option>
+            </select>
+        </div>
+        <div>
+            <label>担当者&emsp;&emsp;&nbsp;</label>
+            <select id="tantou" name="manager">
+                <option value="未選択">未選択</option>
+                <option th:each="manager : ${managerList}"
+                        th:text="${manager.manager}"></option>
+            </select>
+        </div>
+        <div>
+            <label>開始日&emsp;&emsp;&nbsp;</label>
+            <input id="start" name="start" type="date"/>
+            <label>&nbsp;期限&nbsp;&nbsp;</label>
+            <input id="deadline" name="deadline" type="date"/>
+            <p id="err_msg_starts_after_deadline">※期限が開始日より前になっています</p>
+        </div>
+        <div class="description_area">
+            <label class="description_label">説明&emsp;&nbsp;&nbsp;</label>
+            <textarea id="description" name="description" type="text" cols="51" rows="3"></textarea>
+            <p id="err_msg_description_character_limit">※説明の上限文字数を超えています。</p>
+            <p class="description_max">上限1000文字</p>
+        </div>
+        <div class="button_position">
+            <button type="submit" value="登録" onclick="return validate();">登録</button>
+        </div>
+    </form>
+</div>
+
+
+<div class="tasklist">
+    <h2>現在のタスク一覧</h2>
+    <div id="hyoji">
+        <label>&emsp;カテゴリー&nbsp;&nbsp;</label>
+        <form action="/list">
+            <select id="taskCategory" name="taskCategory" onchange="submit(this.form)">
+                <option value='0' th:selected="${taskCategory}==0 ? selected">すべて</option>
+                <option value='未選択' th:selected="${taskCategory}==未選択 ? selected">未選択</option>
+                <option th:each="category : ${categoryList}" th:value="${category.category}"
+                        th:text="${category.category}" th:selected="${category.category==taskCategory}"></option>
+                <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+                <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+            </select>
+        </form>
+        <label>&emsp;担当者&nbsp;&nbsp;</label>
+        <form action="/list">
+            <select id="taskManager" name="taskManager" onchange="submit(this.form)">
+                <option value="0" th:selected="${taskManager}==0 ? selected">すべて</option>
+                <option value="未選択" th:selected="${taskManager}=='未選択' ? selected">未選択</option>
+                <option th:each="manager : ${managerList}"
+                        th:text="${manager.manager}"
+                        th:selected="${manager.manager==taskManager}"></option>
+                <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+                <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+            </select>
+        </form>
+        <label>&emsp;状態&nbsp;&nbsp;</label>
+        <form action="/list">
+            <select id="taskStatus" name="taskStatus" onchange="submit(this.form)">
+                <option value="0" th:selected="${taskStatus}=='0' ? selected">すべて</option>
+                <option th:each="status : ${statusList}" th:value="${status.status}" th:text="${status.status}"
+                        th:selected="${status.status==taskStatus}"></option>
+                <!-- taskStatusの値によってプルダウンの初期表示を決める三項演算子 -->
+                <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+                <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+            </select>
+        </form>
+
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th class="hidden">ID</th>
+            <th>タイトル</th>
+            <th width="90px">カテゴリー</th>
+            <th width="120px">担当者</th>
+            <th width="120px">開始日</th>
+            <th width="120px">期限</th>
+            <th width="354px">説明</th>
+            <th width="50px"></th>
+            <th width="90px">状態</th>
+            <th width="50px"></th>
+            <th width="50px"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${taskList}" th:classappend="${task.manager == currentUser} ? 'bg-blue'">
+            <td class="hidden" th:text="${task.id}"></td>
+            <td th:text="${task.task}"></td>
+            <td th:text="${task.category}" class="display_style"></td>
+            <td th:text="${task.manager}" class="display_style"></td>
+            <td width="100px" th:text="${task.start}" class="display_style"></td>
+            <td width="100px" th:text="${task.deadline}" class="display_style"></td>
+            <td th:text="${task.description}" class="display_description_overflow" style="max-width: 200px;">
+            </td>
+            <td width="50px">
+                <button type="submit" id="detail_button" onclick="
+                                let row_description = this.parentElement.parentElement;
+                                getElementById('description_text').value=row_description.cells[6].firstChild.data;
+                                var detail = getElementById('detail');
+                                detail.style.display = 'block';">詳細
+                </button>
+                <input type="hidden" name="id" th:value="${task.id}"/>
+
+            </td>
+            <td width="50px" th:text="${task.status}" class="display_style"></td>
+            <td width="50px">
+                <button type="submit" class="update_button" onclick="
+                                let row = this.parentElement.parentElement;
+                                getElementById('update_id').value=row.cells[0].firstChild.data;
+                                getElementById('update_task').value=row.cells[1].firstChild.data;
+                              　getElementById('update_category').value=row.cells[2].firstChild.data;
+                                row.cells[3].firstChild == null ? '': getElementById('update_manager').value=row.cells[3].firstChild.data;
+                                row.cells[4].firstChild == null ? '': getElementById('update_start').value=row.cells[4].firstChild.data;
+                                row.cells[5].firstChild == null ? '': getElementById('update_deadline').value=row.cells[5].firstChild.data;
+                                row.cells[6].firstChild == null ? '': getElementById('update_description').value=row.cells[6].firstChild.data;
+                                getElementById('update_status').value=row.cells[8].firstChild.data;
+                                var dialog = getElementById('updateDialog');
+                                dialog.style.display = 'block';
+                 ">更新
+                </button>
+            </td>
+            <td width="50px">
+                <form action="/delete" method="post">
+                    <button type="submit" class="delete_button">削除</button>
+                    <input type="hidden" name="id" th:value="${task.id}"/>
+                    <!変数taskStatusを削除ボタンを押した時にコントローラーに送信>
+                    <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+                    <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+                    <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="updateDialog">
+    <div class="task_form">
+        <h2>タスクの更新</h2>
+        <form action="/update" method="post">
+            <!変数taskStatusを更新ボタンを押した時にコントローラーに送信>
+            <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+            <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+            <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+            <input id="update_id" name="id" type="hidden"/>
+            <label>タイトル&emsp;</label>
+            <input id="update_task" name="task" type="text" style="width:354px;"/>
+            <p id="err_msg_update_task_blank">※タスクのタイトルは入力必須です。</p>
+            <p id="err_msg_update_task_character_limit">※タイトルの上限文字数を超えています。</p>
+            <p class="title_max">上限30文字</p>
+            <div>
+                <label>カテゴリー</label>
+                <select id="update_category" name="category">
+                    <option value="未選択">未選択</option>
+                    <option th:each="category : ${categoryList}" th:value="${category.category}"
+                            th:text="${category.category}" th:selected="${category.category==taskCategory}"></option>
+                </select>
+            </div>
+            <label>担当者&emsp;&emsp;&nbsp;</label>
+            <select id="update_manager" name="manager">
+                <option value="未選択">未選択</option>
+                <option th:each="manager : ${managerList}"
+                        th:text="${manager.manager}"></option>
+            </select>
+            <div>
+                <label>開始日&emsp;&emsp;&nbsp;</label>
+                <input id="update_start" name="start" type="date"/>
+                <label>&nbsp;期限&nbsp;</label>
+                <input id="update_deadline" name="deadline" type="date"/>
+                <p id="err_msg_update_starts_after_deadline">※期限が開始日より前になっています</p>
+            </div>
+            <div class="description_area">
+                <label>説明&emsp;&emsp;&nbsp;&nbsp;</label>
+                <textarea id="update_description" name="description" type="text" cols="50" rows="3">
+            </textarea>
+                <p id="err_msg_update_description_character_limit">※説明の上限文字数を超えています。</p>
+                <p class="description_max">上限1000文字</p>
+            </div>
+            <label>状態&emsp;&emsp;&emsp;&nbsp;</label>
+            <select id="update_status" name="status">
+                <option th:each="status : ${statusList}" th:text="${status.status}"></option>
+            </select>
+            <div class="button_position">
+                <button type="submit"
+                        onclick="return update_validate();">更新
+                </button>
+                <button type="reset" onclick="
+                     getElementById('update_start').style.borderWidth = getElementById('update_deadline').style.borderWidth = getElementById('update_task').style.borderWidth= getElementById('update_description').style.borderWidth ='';
+                     getElementById('update_start').style.borderColor = getElementById('update_deadline').style.borderColor = getElementById('update_task').style.borderColor = getElementById('update_description').style.borderColor = '';
+                     document.getElementById('err_msg_update_task_blank').style.display = 'none';
+                     document.getElementById('err_msg_update_task_character_limit').style.display = 'none';
+                     document.getElementById('err_msg_update_starts_after_deadline').style.display = 'none';
+                     document.getElementById('err_msg_update_description_character_limit').style.display = 'none';
+                     getElementById('updateDialog').style.display='none';">キャンセル
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="detail">
+    <div class="task_form">
+        <form action="/detail">
+            <div>
+                <textarea type="text" id="description_text" readonly></textarea>
+                <div class="button_position">
+                    <button class="button_style" type="reset" onclick="getElementById('detail').style.display='none';">
+                        ×
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+

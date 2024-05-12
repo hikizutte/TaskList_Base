@@ -1,0 +1,47 @@
+body {
+  background-color: #fffff0a8;
+  margin: 30px;
+  color: #000000;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+
+label{
+ font-size:15px;
+}
+
+input{
+ width:250px;
+}
+
+input[type="text"]{
+ margin-left:15px;
+}
+
+.login_form {
+ line-height: 2em;
+ padding: 0px 10px 10px 10px;
+ border: 1px solid;
+ width:400px;
+ background-color: #ffffff;
+ padding-top:20px;
+ vertical-align:middle;
+ text-align:center;
+}
+
+.button_position{
+ margin-top:30px;
+ text-align:right;
+ margin-right:20px;
+}
+
+#err_msg_invalid_userDetails{
+   font-size: 12px;
+   color: red;
+   display: block;
+   text-align: left;
+   float: left;
+   margin-left :125px;
+   line-height:10px;
+}
+
+#setting_manager,

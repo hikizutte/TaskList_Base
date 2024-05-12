@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>項目設定</title>
+    <link th:href="@{/home.css}" rel="stylesheet">
+    <script th:src="@{/validate.js}"></script>
+</head>
+<body>
+
+<form action="/list">
+    <button class="setting_button" type="submit">タスク一覧へ</button>
+    <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+    <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+    <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+</form>
+<h1>項目設定画面</h1>
+
+<div class="setting">
+    <div class="setting_form">
+        <h2>カテゴリー</h2>
+        <form action="/setting_category_add">
+            <div>
+            <input id="category" name="category" type="text" style="width:200px;" placeholder="カテゴリーを入力してください"/>
+                    <button type="submit"class="button_position" value="登録"onclick="
+                    let task = getElementById('category').value;
+                    if(!task || task.trim().length == 0){
+                    document.getElementById('err_msg_set_category_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_category_character_limit').style.display = 'none';
+                    return false;
+                    }
+                    if(task.length >10){
+                    document.getElementById('err_msg_set_category_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_category_blank').style.display = 'none';
+                    result = false;
+                    }
+                    return result;"
+                    >追加</button>
+                <br>
+                <p id="err_msg_set_category_blank">※入力必須です。</p>
+                <p id="err_msg_set_category_character_limit">※上限文字数を超えています。</p>
+                <p class="title_max">上限10文字</p>
+            </div>
+        </form>
+        <table border="1" class="setting_table_position">
+            <thead>
+            <tr>
+                <th>カテゴリー</th>
+                <th width="50"></th>
+                <th width="50"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categoryList}">
+                <td th:text="${category.category}"class="display_style"></td>
+                <td>
+                    <button type="submit" class="update_button" onclick="
+                                let row = this.parentElement.parentElement;
+                                getElementById('update_category_before').value=row.cells[0].firstChild.data;
+                                getElementById('update_category_after').value=row.cells[0].firstChild.data;
+                                var dialog = getElementById('category_updatedialog');
+                                dialog.style.display = 'block';
+                 ">変更
+                    </button>
+                </td>
+                <td>
+                    <form action="/setting_category_delete">
+                        <button type="submit" class="delete_button">削除</button>
+                        <input type="hidden" name="category" th:value="${category.category}"/>
+                        </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="category_updatedialog">
+        <div class="category_form">
+            <h2>カテゴリーの変更</h2>
+            <form action="/setting_category_update">
+                <input id="update_category_before" name="category_before" type="hidden" />
+                <input id="update_category_after" name="category_after" type="text" />
+                <br><p id="err_msg_set_update_category_blank">※入力必須です。</p>
+                <p id="err_msg_set_update_category_character_limit">※上限文字数を超えています。</p>
+                <p class="title_max">上限10文字</p>
+                <div class="button_position">
+                    <button type="submit"value="変更"onclick="
+                    let task = getElementById('update_category_after').value;
+                    if(!task || task.trim().length == 0){
+                    document.getElementById('err_msg_set_update_category_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_update_category_character_limit').style.display = 'none';
+                    return false;
+                    }
+                    if(task.length >10){
+                    document.getElementById('err_msg_set_update_category_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_update_category_blank').style.display = 'none';
+                    result = false;
+                    }
+                    return result;">変更
+                    </button>
+                    <button type="reset" onclick="
+                     getElementById('category_updatedialog').style.display='none';
+                     document.getElementById('err_msg_set_update_category_blank').style.display = 'none';
+                     document.getElementById('err_msg_set_update_category_character_limit').style.display = 'none';
+                    ">キャンセル
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    <div class="setting_form">
+        <h2>担当者</h2>
+        <form action="/addsettingmanager">
+            <div>
+                <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+                <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+                <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+                <input id="setting_manager" name="setting_add_manager" type="text" style="width:200px;"
+                       placeholder="担当者を入力してください"/>
+                <button class="button_position" type="submit"
+                        onclick="
+                    var setting_manager = getElementById('setting_manager').value;
+                    if (!setting_manager||setting_manager.trim().length==0){
+                    document.getElementById('err_msg_set_manager_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_manager_character_limit').style.display = 'none';
+                    return false;
+                    }else if(setting_manager.length>=11){
+                    document.getElementById('err_msg_set_manager_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_manager_blank').style.display = 'none';
+                    return false;
+                    }">追加
+                </button>
+                <br>
+                <p id="err_msg_set_manager_blank">※入力必須です。</p>
+                <p id="err_msg_set_manager_character_limit">※上限文字数を超えています。</p>
+                <p class="title_max">上限10文字</p>
+            </div>
+        </form>
+        <table border="1" class="setting_table_position">
+            <thead>
+            <tr>
+                <th>担当者</th>
+                <th width="50"></th>
+                <th width="50"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="manager : ${managerList}">
+                <td th:text="${manager.manager}" class="display_style"></td>
+                <td>
+                    <button class="update_button" onclick="
+                                let row = this.parentElement.parentElement;
+                                getElementById('setting_manager_update').value=row.cells[0].firstChild.data;
+                                getElementById('setting_manager_update_before').value=row.cells[0].firstChild.data;
+                                var setting_manager_update_dialog = getElementById('settingManagerUpdateDialog');
+                                setting_manager_update_dialog.style.display = 'block';
+                    ">変更
+                    </button>
+                </td>
+                <td>
+                    <form action="/deletesettingmanager">
+                        <button type="submit" class="delete_button">削除</button>
+                        <input type="hidden" name="setting_manager_delete" th:value="${manager.manager}"/>
+                        <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+                        <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+                        <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="settingManagerUpdateDialog">
+        <div class="manager_form">
+        <h2>担当者の変更</h2>
+        <form action="/updatesettingmanager">
+            <input type="hidden" name="taskStatus" th:value="${taskStatus}"/>
+            <input type="hidden" name="taskCategory" th:value="${taskCategory}"/>
+            <input type="hidden" name="taskManager" th:value="${taskManager}"/>
+            <input type="hidden" id="setting_manager_update_before" name="setting_manager_preupdate"/>
+            <input id="setting_manager_update" type="text" name="setting_manager_update"/>
+            <br>
+            <p id="err_msg_set_update_manager_blank">※入力必須です。</p>
+            <p id="err_msg_set_update_manager_character_limit">※上限文字数を超えています。</p>
+            <p class="title_max">上限10文字</p>
+            <div class="button_position">
+            <button type="submit" onclick="
+                    var setting_manager_update = getElementById('setting_manager_update').value;
+                    if (!setting_manager_update||setting_manager_update.trim().length==0){
+                    document.getElementById('err_msg_set_update_manager_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_update_manager_character_limit').style.display = 'none';
+                    return false;
+                    }else if(setting_manager_update.length>=11){
+                    document.getElementById('err_msg_set_update_manager_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_update_manager_blank').style.display = 'none';
+                    return false;
+                    }else if(setting_manager_update==''){
+                    return false
+                    }">変更
+            </button>
+            <button type="reset" onclick="
+            document.getElementById('err_msg_set_update_manager_blank').style.display='none';
+            document.getElementById('err_msg_set_update_manager_character_limit').style.display='none';
+            getElementById('settingManagerUpdateDialog').style.display='none';">キャンセル
+            </button>
+            </div>
+        </form>
+        </div>
+    </div>
+
+    <div class="setting_form">
+        <h2>状態</h2>
+        <form action="/setting_status_add">
+            <input id="setting_status_add" name="setting_status_add" type="text" style="width:200px;" placeholder="状態を入力してください"/>
+            <button class="button_position" type="submit" value="追加"
+                    onclick="
+                    var setting_status = getElementById('setting_status_add').value;
+                    if (!setting_status||setting_status.trim().length==0){
+                    document.getElementById('err_msg_set_status_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_status_character_limit').style.display = 'none';
+                    return false;
+                    }else if(setting_status.length>=11){
+                    document.getElementById('err_msg_set_status_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_status_blank').style.display = 'none';
+                    return false;
+                    }">追加</button>
+            <br>
+            <p id="err_msg_set_status_blank">※入力必須です。</p>
+            <p id="err_msg_set_status_character_limit">※上限文字数を超えています。</p>
+            <p class="title_max">上限10文字</p>
+        </form>
+        <table border="1" class="setting_table_position">
+            <thead>
+            <tr>
+                <th>状態</th>
+                <th width="50"></th>
+                <th width="50"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="status,statusStat:${statusList}" >
+                <td th:text="${status.status}" class="display_style"></td>
+                <td width="50px" align="center">
+                    <button type="submit" class="update_button" onclick="
+                        let row = this.parentElement.parentElement;
+                        getElementById('setting_status_update').value = row.cells[0].firstChild.data;
+                        getElementById('setting_status_update_before').value = row.cells[0].firstChild.data;
+                        var dialog = getElementById('status_updateDialog');
+                        dialog.style.display = 'block';
+                    ">変更</button>
+                </td>
+                <td width="50px" align="center" th:if="${statusStat.index} lt 3" >
+                </td>
+                <td width="50px" align="center" th:if="${statusStat.index} gt 2" >
+                        <button type="submit" class="delete_button" onclick="
+                            let row = this.parentElement.parentElement;
+                            getElementById('setting_status_before').value = row.cells[0].firstChild.data;
+                            getElementById('setting_status_delete_before').value = row.cells[0].firstChild.data;
+                            document.getElementById(row.cells[0].firstChild.data).style.display = 'none'; //削除後の行き先プルダウンから対象のoptionを非表示
+                            var dialog = getElementById('status_deleteDialog');
+                            dialog.style.display = 'block';
+                        ">削除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="status_updateDialog">
+    <div class="status_form">
+        <h2>状態名の変更</h2>
+        <form action="/setting_status_update">
+            <input id="setting_status_update" name="status_after" type="text" width="150px"/>
+            <input id="setting_status_update_before" name="status_before" type="hidden" />
+            <br>
+            <p id="err_msg_set_update_status_blank">※入力必須です。</p>
+            <p id="err_msg_set_update_status_character_limit">※上限文字数を超えています。</p>
+            <p class="title_max">上限10文字</p>
+            <div class="button_position">
+                <button type="submit"  onclick="
+                    var setting_status_update = getElementById('setting_status_update').value;
+                    if (!setting_status_update||setting_status_update.trim().length==0){
+                    document.getElementById('err_msg_set_update_status_blank').style.display = 'block';
+                    document.getElementById('err_msg_set_update_status_character_limit').style.display = 'none';
+                    return false;
+                    }else if(setting_status_update.length>=11){
+                    document.getElementById('err_msg_set_update_status_character_limit').style.display = 'block';
+                    document.getElementById('err_msg_set_update_status_blank').style.display = 'none';
+                    return false;
+                    }">変更</button>
+                <button type="reset" onclick="
+                    document.getElementById('err_msg_set_update_status_blank').style.display='none';
+                    document.getElementById('err_msg_set_update_status_character_limit').style.display='none';
+                    getElementById('status_updateDialog').style.display='none';">キャンセル
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="status_deleteDialog">
+    <div class="status_delete_form">
+        <h2>削除</h2>
+        「現在のタスク一覧」でタスクの状態が<br>
+        <input type="text" id="setting_status_before" readonly>となっているものを</input>
+        <form action="/setting_status_delete">
+            <select id="setting_status_delete_after" name="status_delete_after"  >
+                <option th:each="status : ${statusList}" th:id="${status.status}" th:value="${status.status}" th:text="${status.status}"></option>
+                <input id="setting_status_delete_before" name="status_delete_before" type="hidden" />
+            に変える</select>
+            <div class="button_position">
+                <button type="submit">決定</button>
+                <button type="reset" onclick="
+                    getElementById('status_deleteDialog').style.display='none';
+                    let status_before = getElementById('setting_status_before').value;
+                    document.getElementById(status_before).style.display = 'block';">キャンセル
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

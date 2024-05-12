@@ -1,0 +1,291 @@
+/* 共通項目 */
+body {
+  background-color: #fffff0a8;
+  margin: 30px;
+  color: #000000;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+input,select {
+  height:20px;
+  border:1px solid;
+}
+
+.application_title{
+  float:left;
+  margin-top:0;
+  padding-top:0;
+}
+
+.account_name{
+ text-align:right;
+ padding-top:35px;
+}
+
+#task{
+  margin-left:16px;
+}
+
+#update_task{
+  margin-left:2px;
+}
+
+.tasklist h2{
+  margin-bottom:0px;
+}
+
+#hyoji{
+  vertical-align:middle;
+  float:right;
+  flex-wrap: nowrap;
+  display:flex;
+  margin: 0px 0px 10px 0px;
+}
+
+textarea{
+  width:355px;
+  vertical-align:top;
+  border: 1px solid;
+  margin-left:25px;
+  margin-top:10px;
+  resize: none;
+}
+
+#update_status{
+  height:20px;
+  border: 1px solid;
+  margin-left:2px;
+}
+
+#update_description{
+  margin-left:11px;
+}
+
+select{
+  width:154px;
+}
+
+.hidden {
+  display: none;
+}
+
+h1{
+  margin:20px 0px;
+}
+
+/* タスク入力フォーム */
+.task_form {
+  line-height: 2em;
+  padding: 0px 10px 10px 10px;
+  border: 1px solid;
+  width:460px;
+  background-color: #ffffff;
+  padding-top:20px;
+  vertical-align:middle;
+}
+
+ /* エラーメッセージを表示させないようにする */
+#err_msg_task_blank,#err_msg_task_character_limit,#err_msg_starts_after_deadline,#err_msg_description_character_limit,
+#err_msg_update_task_blank,#err_msg_update_task_character_limit,#err_msg_update_starts_after_deadline,#err_msg_update_description_character_limit{
+  font-size: 12px;
+  color: red;
+  display: none;
+  text-align: left;  /* 文章を左寄せする(※) */
+  float: left;
+  margin-left :85px;
+}
+
+#err_msg_set_category_blank,#err_msg_set_category_character_limit,#err_msg_set_manager_blank,#err_msg_set_manager_character_limit,#err_msg_set_status_blank,#err_msg_set_status_character_limit,
+#err_msg_set_update_category_blank,#err_msg_set_update_category_character_limit,#err_msg_set_update_manager_blank,#err_msg_set_update_manager_character_limit,#err_msg_set_update_status_blank,#err_msg_set_update_status_character_limit{
+  font-size: 12px;
+  color: red;
+  display: none;
+  text-align: left;  /* 文章を左寄せする(※) */
+  float: left;
+}
+
+.title_max,.description_max {
+  text-align: right; /* 文章を右寄せする */
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+p{
+  line-height:5px;
+  margin: 5px;
+}
+
+.description_area{
+  margin-top:15px;
+}
+
+.description_max {
+  line-height:10px;
+  }
+
+.task_form input[type="date"] {
+  width: 150px;
+}
+
+.date_area{
+  padding-bottom:30px;
+
+}
+
+.tasklist table{
+  width: 100%;
+  border: 1px solid;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+th{
+  background-color: #b6f8b5;
+}
+
+tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+
+tr.bg-blue{
+    background-color: #e0efff;
+    border: 2px solid blue;
+}
+tr2:nth-child(odd) {
+  background: #dde1e3;
+}
+
+button{
+  -webkit-appearance:none;
+  appearance:none;
+  border:solid 1px;
+}
+
+.button_position{
+  margin-top:10px;
+  text-align:right;
+  margin-right:11.8px;
+}
+
+.button_style{
+  width:30px;
+  font-size:15px;
+
+}
+
+.update_button,.delete_button,#detail_button{
+  width:50px;
+  margin:0px 0px;
+}
+
+.display_style{
+  text-align:center;
+}
+
+.display_description_overflow {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#description_text{
+  width:100%;
+  height:268px;
+  resize: none;
+  margin:0px;
+  padding:0px;
+  overflow:visible;
+
+}
+
+/* タスク更新ダイアログ (第18章のサンプルで使用) */
+
+#updateDialog{
+  display: none;
+  background-color: #FFFFFF;
+  border: 2px double;
+  width: 462px;
+  position: fixed;
+  top: 120px;
+  left:280px;
+  z-index: 9999;
+}
+
+#detail {
+  display: none;
+  background-color: #FFFFFF;
+  border: 2px double;
+  width: 462px;
+  position:fixed;
+  top: 120px;
+  right:280px;
+  z-index: 9998;
+}
+
+.setting{
+  display: flex;
+}
+
+.setting table{
+  width:100%;
+  border: 1px solid;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+.setting_form{
+  margin-right: 100px;
+}
+
+.setting_table_position{
+  margin-top: 15px;
+}
+
+.setting_button{
+  margin-top: 10px;
+  float: right;
+}
+
+.status_form,.category_form,.manager_form{
+  line-height: 2em;
+  padding: 0px 10px 10px 10px;
+  border: 1px solid;
+  width:268px;
+  background-color: #ffffff;
+  padding-top:20px;
+  vertical-align:middle;
+  }
+
+
+  #category_updatedialog,#status_updateDialog,#settingManagerUpdateDialog {
+    display: none;
+    background-color: #FFFFFF;
+    border: 2px double;
+    width: 290px;
+    position: fixed;
+    top: 120px;
+    left:280px;
+    z-index: 9999;
+  }
+
+.status_delete_form{
+  line-height: 2em;
+  padding: 0px 10px 10px 10px;
+  border: 1px solid;
+  width:298px;
+  background-color: #ffffff;
+  padding-top:20px;
+  vertical-align:middle;
+}
+
+  #status_deleteDialog{
+  display: none;
+      background-color: #FFFFFF;
+      border: 2px double;
+      width: 320px;
+      position: fixed;
+      top: 120px;
+      left:280px;
+      z-index: 9999;
+  }

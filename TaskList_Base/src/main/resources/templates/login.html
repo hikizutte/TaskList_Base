@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+         <meta charset="UTF-8">
+        <link th:href="@{/login.css}" rel="stylesheet">
+            <title>ログイン画面 </title>
+    </head>
+    <body>
+<h1>タスク管理アプリケーション</h1>
+<h2>ログイン画面</h2>
+
+      <div class="login_form">
+          <form th:action="@{/login}" method="post">
+              <div><label>&emsp;&emsp;ID&emsp;&emsp;&emsp;&emsp;</label><input type="text" name="username"/></div>
+              <div><label>パスワード&emsp;&emsp;</label> <input type="password" name="password"/> </div>
+              <div th:if="${param.error}" id="err_msg_invalid_userDetails">※IDかパスワードが無効です。</div>
+              <div class="button_position"><button type="submit" value="ログイン">ログイン</button></div>
+          </form>
+      </div>
+    </body>
+</html>
